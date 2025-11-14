@@ -48,7 +48,10 @@ int main(int argc, char **argv) {
   fflush(stdout);
   startTime(&timer);
 
-  // INSERT CODE HERE
+  float *A_d, *B_d, *C_d;
+  cudaMalloc((void **)&A_d, size);
+  cudaMalloc((void **)&B_d, size);
+  cudaMalloc((void **)&C_d, size);
 
   cudaDeviceSynchronize();
   stopTime(&timer);
@@ -60,7 +63,8 @@ int main(int argc, char **argv) {
   fflush(stdout);
   startTime(&timer);
 
-  // INSERT CODE HERE
+  cudaMemcpy(A_d, A_h, size, cudaMemcpyHostToDevice);
+  cudaMemcpy(B_d, B_h, size, cudaMemcpyHostToDevice);
 
   cudaDeviceSynchronize();
   stopTime(&timer);
@@ -72,7 +76,12 @@ int main(int argc, char **argv) {
   fflush(stdout);
   startTime(&timer);
 
-  // INSERT CODE HERE
+  // Define block and grid dimensions
+  int blockSize = 256; // Number of threads per block
+  // Calculate grid size to cover all n elements
+  int gridSize = (n + blockSize - 1) / blockSize;
+
+  vecAddKernel<<<gridSize, blockSize>>>(A_d, B_d, C_d, n);
 
   cuda_ret = cudaDeviceSynchronize();
   if (cuda_ret != cudaSuccess)
@@ -86,7 +95,7 @@ int main(int argc, char **argv) {
   fflush(stdout);
   startTime(&timer);
 
-  // INSERT CODE HERE
+  cudaMemcpy(C_h, C_d, size, cudaMemcpyDeviceToHost);
 
   cudaDeviceSynchronize();
   stopTime(&timer);
@@ -105,7 +114,9 @@ int main(int argc, char **argv) {
   free(B_h);
   free(C_h);
 
-  // INSERT CODE HERE
+  cudaFree(A_d);
+  cudaFree(B_d);
+  cudaFree(C_d);
 
   return 0;
 }
