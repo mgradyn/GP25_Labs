@@ -26,17 +26,19 @@ int main(int argc, char **argv) {
     exit(0);
   }
 
-  float *A_h = (float *)malloc(sizeof(float) * n);
+  size_t size = sizeof(float) * n;
+
+  float *A_h = (float *)malloc(size); // Use size here
   for (unsigned int i = 0; i < n; i++) {
     A_h[i] = (rand() % 100) / 100.00;
   }
 
-  float *B_h = (float *)malloc(sizeof(float) * n);
+  float *B_h = (float *)malloc(size); // Use size here
   for (unsigned int i = 0; i < n; i++) {
     B_h[i] = (rand() % 100) / 100.00;
   }
 
-  float *C_h = (float *)malloc(sizeof(float) * n);
+  float *C_h = (float *)malloc(size); // Use size here
 
   stopTime(&timer);
   printf("%f s\n", elapsedTime(timer));
